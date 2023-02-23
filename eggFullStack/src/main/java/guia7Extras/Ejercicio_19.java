@@ -6,14 +6,29 @@ import java.util.Scanner;
 public class Ejercicio_19 {
     public static void main(String[] args) {
         Scanner leer = new Scanner(System.in);
-        int[] v1 = {1,2,3,4,5};
-        int[] v2 = {1,2,3,4,5};
+        System.out.println("¿Cual es el tamaño de los vectores?");
+        int t = leer.nextInt();
+        int[] v1 = new int[t];
+        int[] v2 = new int[t];
+        
+        System.out.println("\nRellenando vector A:");
+        for (int i = 0; i < t; i++) {
+            System.out.print((i+1)+". Digite un numero entero: ");
+            v1[i] = leer.nextInt();
+        }
+        System.out.println("");
+        
+        System.out.println("Rellenando vector B:");
+        for (int i = 0; i < t; i++) {
+            System.out.print((i+1)+". Digite un numero entero: ");
+            v2[i] = leer.nextInt();
+        }
         
         if(compararVectores(v1,v2)){
-            System.out.println("Los vectores son iguales.");
+            System.out.println("\nLos vectores son iguales.");
         }
         else{
-            System.out.println("Los vectores no son iguales.");
+            System.out.println("\nLos vectores no son iguales.");
         }
         
     }
