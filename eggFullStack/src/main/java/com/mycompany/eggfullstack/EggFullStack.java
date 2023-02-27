@@ -1,5 +1,4 @@
 
-
 package com.mycompany.eggfullstack;
 
 public class EggFullStack {
