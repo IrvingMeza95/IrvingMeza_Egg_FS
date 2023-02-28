@@ -9,7 +9,7 @@ public class Ejercicio_5 {
         String opc;
         
         do {
-            System.out.println("Ingresa el tipo de socio:\n"
+            System.out.println("Ingresa el tipo de socio (solo ingresar la letra):\n"
             + "[A] Socio A\n"
             + "[B] Socio B\n"
             + "[C] Socio C");

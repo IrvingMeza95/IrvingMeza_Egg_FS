@@ -20,7 +20,6 @@ public class Ejercicio_7 {
         int i=0;
         System.out.println("\nPidiendo valores:");
         while(i<vector.length){
-            
             do {
                 System.out.print((i+1)+". Digite un numero: ");
                 vector[i] = leer.nextFloat();
