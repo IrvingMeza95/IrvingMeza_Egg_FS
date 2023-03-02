@@ -8,6 +8,7 @@ public class Ejercicio_21 {
     private float trabajoPracticoDos=0;
     private float integradorUno=0;
     private float integradorDos=0;
+    private boolean aprobadoDesaprobado=false;
     
     private float porcentajeTrabajoPracticoUno=0.15f;
     private float porcentajeTrabajoPracticoDos=0.15f;
@@ -35,10 +36,12 @@ public class Ejercicio_21 {
             if (alumnos[i].calcPromedio(alumnos[i])>=7) {
                 aprobados[numeroAprobaddos] = alumnos[i].calcPromedio(alumnos[i]);
                 numeroAprobaddos++;
+                this.aprobadoDesaprobado=true;
             }
             else{
                 desaprobados[numeroDesaprobaods] = alumnos[i].calcPromedio(alumnos[i]);
                 numeroDesaprobaods++;
+                this.aprobadoDesaprobado=false;
             }
         }
         
@@ -168,6 +171,14 @@ public class Ejercicio_21 {
 
     public void setPorcentajeIntegradorDos(float porcentajeIntegradorDos) {
         this.porcentajeIntegradorDos = porcentajeIntegradorDos;
+    }
+
+    public boolean isAprobadoDesaprobado() {
+        return aprobadoDesaprobado;
+    }
+
+    public void setAprobadoDesaprobado(boolean aprobadoDesaprobado) {
+        this.aprobadoDesaprobado = aprobadoDesaprobado;
     }
     
     
