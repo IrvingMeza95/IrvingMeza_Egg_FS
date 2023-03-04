@@ -1,31 +1,29 @@
 
 package guia7Extras;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Scanner;
 
 public class Ejercicio_Registros_Almacen {
+    final float porcentajeGanancia=0.2f;
+    final int numeroColumnas=4;
     private Object Almacen[][];
+    final int numeroColumnasTablaHistorial=8;
+    final int numeroRegistrosTablaHistorial=100;
+    final Object Historial[][] = new Object[numeroRegistrosTablaHistorial+1][numeroColumnasTablaHistorial];
     private int numeroProductos=0;
-    private int numeroColumnas=4;
 
     public Ejercicio_Registros_Almacen() {
-    }
-
-    public Ejercicio_Registros_Almacen(int numeroProductos) {
-        this.numeroProductos = numeroProductos;
-        this.Almacen = new Object[this.numeroProductos][4];
-    }
-
-    public Ejercicio_Registros_Almacen(Object[][] Almacen) {
-        this.Almacen = Almacen;
     }
         
     public void init(){
         Scanner leer = new Scanner(System.in);
+        this.construirTablaHistorial();
         System.out.print("¿Para cuantos productos deseas iniciar el registro?, ");
         this.numeroProductos = leer.nextInt();
         this.Almacen = new Object[this.numeroProductos+1][this.numeroColumnas];
-        construirTabla(numeroProductos);
+        construirTablaProductos(numeroProductos);
         do {
         } while (this.MENU());
     }
@@ -38,14 +36,17 @@ public class Ejercicio_Registros_Almacen {
         do {
             System.out.print("\nDigite el numero de la opcion que desee:\n"
             + "[1] Agregar producto\n"
-            + "[2] Check out de registros\n"
+            + "[2] Check out de stock general\n"
             + "[3] Buscar producto\n"
-            + "[4] Salir\n"
+            + "[4] Registrar compra de producto\n"
+            + "[5] Registrar venta de producto\n"
+            + "[6] Mostrar historial\n"
+            + "[7] Salir\n"
             + "Opcion: ");
            opc = leer.nextInt();
-           if(opc!=1 && opc!=2 && opc!=3 && opc!=4)
+           if(opc <1 || opc>7)
                 System.out.println("Opcion no valida, por favor intentelo de nuevo.");
-        } while (opc!=1 && opc!=2 && opc!=3 && opc!=4);
+        } while (opc <1 || opc>7);
         
         switch (opc) {
             case 1:
@@ -53,23 +54,87 @@ public class Ejercicio_Registros_Almacen {
                     System.out.println("Se han agregado el maximo de productos disponibles.");
                 break;
             case 2:
-                this.mostrarTabla();
+                this.mostrarTablaProductos();
                 break;
             case 3:
                 fila=this.obtenerFila();
                 if (fila!=0) {
-                    this.encabezadosTabla();
-                    this.registrosTabla(fila);
+                    this.encabezadosTablaProductos();
+                    this.registrosTablaProductos(fila);
                 }
                 else{
                     System.out.println("\nEl producto no fue encontrado.");
                 }
                 break;
             case 4:
+                this.registrarCompraProducto();
+                break;
+            case 5:
+                
+                break;
+            case 6:
+                this.mostrarTablaHistorial();
+                break;
+            case 7:
                 band=false;
         }
         
         return band;
+    }
+    
+    private void registrarCompraProducto(){
+        Scanner leer = new Scanner(System.in);
+        int filaProducto=this.obtenerFila();
+        if(filaProducto!=0){
+            Date fechaActual = new Date();
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            String fecha = sdf.format(fechaActual);
+            System.out.print("¿Que cantidad del producto "+this.Almacen[filaProducto][0]+" se ha comprado?, ");
+            int cantidadProducto = leer.nextInt();
+            System.out.print("¿Cual fue el precio de compra?, ");
+            float precioCompra = leer.nextFloat();
+            float precioVenta = (float)(precioCompra*(1+this.porcentajeGanancia));
+            for (int i = 1; i <= this.Historial.length; i++) {
+                if (String.valueOf(this.Historial[i][0]).equals(" ")) {
+                    this.Historial[i][0] = fecha;
+                    this.Historial[i][1] = this.Almacen[filaProducto][0];
+                    this.Historial[i][2] = filaProducto;
+                    this.Historial[i][3] = "Compra";
+                    this.Historial[i][4] = cantidadProducto;
+                    this.Historial[i][5] = precioCompra;
+                    this.Historial[i][6] = precioVenta;
+                    this.Historial[i][7] = 0;
+                    this.Almacen[filaProducto][3] = ((float)this.Almacen[filaProducto][3]+precioVenta)/2;;
+                    System.out.println("\nRegistro de compra realizado correctamente.");
+                    break;
+                }
+            }
+        }
+        else{
+            System.out.println("\nEl producto digitado no se ha encontrado en la base de datos.");
+        }
+        
+    }
+    
+    private void registrarAltaProducto(int filaProducto,String nombre,int cantidadProducto,float precioCompra,float precioVenta){
+        Date fechaActual = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        String fecha = sdf.format(fechaActual);
+        for (int i = 1; i <= this.Historial.length; i++) {
+            if (String.valueOf(this.Historial[i][0]).equals(" ")) {
+                this.Historial[i][0] = fecha;
+                this.Historial[i][1] = nombre;
+                this.Historial[i][2] = filaProducto;
+                this.Historial[i][3] = "Alta";
+                this.Historial[i][4] = cantidadProducto;
+                this.Historial[i][5] = precioCompra;
+                this.Historial[i][6] = precioVenta;
+                this.Historial[i][7] = 0;
+                System.out.println("\nProducto dado de alta correctamente.");
+                break;
+            }
+        }
+        
     }
     
     private boolean agregarProducto(){
@@ -83,13 +148,17 @@ public class Ejercicio_Registros_Almacen {
         for (int i = 1; i <= this.numeroProductos; i++) {
             if (this.Almacen[i][0].equals(" ")) {
                 System.out.print("Digite el nombre del producto: ");
-                this.Almacen[i][0] = leer.nextLine();
+                nombre = leer.nextLine();
+                this.Almacen[i][0] = nombre;
                 System.out.print("Digite la cantidad de stock inicial: ");
-                this.Almacen[i][1] = leer.next();
+                stock = leer.nextInt();;
+                this.Almacen[i][1] = stock;
                 System.out.print("Digite el precio de compra: ");
-                this.Almacen[i][2] = leer.nextFloat();
-                System.out.print("Digite el precio de venta del producto: ");
-                this.Almacen[i][3] = leer.nextFloat();
+                precioCompra = leer.nextFloat();
+                this.Almacen[i][2] = precioCompra;
+                precioVenta = (float)this.Almacen[i][2]*(1+this.porcentajeGanancia);
+                this.Almacen[i][3] = precioVenta;
+                this.registrarAltaProducto(i, nombre,stock,precioCompra,precioVenta);
                 band=true;
                 break;
             }
@@ -97,14 +166,21 @@ public class Ejercicio_Registros_Almacen {
         return band;
     }
     
-    private void mostrarTabla(){
-        encabezadosTabla();
+    private void mostrarTablaProductos(){
+        encabezadosTablaProductos();
         for (int i = 1; i <= this.numeroProductos; i++) {
-            this.registrosTabla(i);
+            this.registrosTablaProductos(i);
         }
     }
     
-    private void encabezadosTabla(){
+    private void mostrarTablaHistorial(){
+        encabezadosTablaHistorial();
+        for (int i = 1; i <= this.numeroRegistrosTablaHistorial; i++) {
+            this.registrosTablaHistorial(i);
+        }
+    }
+    
+    private void encabezadosTablaProductos(){
         int numeroEspacios=0;
         for (int i = 0; i < this.numeroColumnas; i++) {
             if(String.valueOf(this.Almacen[0][i]).length()>numeroEspacios)
@@ -117,7 +193,7 @@ public class Ejercicio_Registros_Almacen {
         
         numeroEspacios/=2;
         
-        System.out.println("\nTabla de registros...");
+        System.out.println("\nTabla de productos...");
         for (int i = 0; i < this.numeroColumnas; i++) {
             for (int j = 0; j < (numeroEspacios-(String.valueOf(this.Almacen[0][i]).length()/2)); j++) {
                 System.out.print(" ");
@@ -131,7 +207,7 @@ public class Ejercicio_Registros_Almacen {
         System.out.println("");
     }
     
-    private void registrosTabla(int f){
+    private void registrosTablaProductos(int f){
         int numeroEspacios=0;
         for (int i = 0; i < this.numeroColumnas; i++) {
             if(String.valueOf(this.Almacen[0][i]).length()>numeroEspacios)
@@ -178,33 +254,89 @@ public class Ejercicio_Registros_Almacen {
         return fila;
     }
     
-    private void construirTabla(int numeroProductos){
+    private void construirTablaProductos(int numeroProductos){
         Scanner leer = new Scanner(System.in);
         this.Almacen[0][0] = "Nombre";
         this.Almacen[0][1] = "Stock";
         this.Almacen[0][2] = "Precio Compra";
-        this.Almacen[0][3] = "Compra Venta";
+        this.Almacen[0][3] = "Precio Venta";
         for (int i = 1; i <= numeroProductos; i++) {
             for (int j = 0; j < this.numeroColumnas; j++) {
                 this.Almacen[i][j] = " ";
             }
         }
     }
-
-    public int getNumeroProductos() {
-        return numeroProductos;
+    
+    private void construirTablaHistorial(){
+        Scanner leer = new Scanner(System.in);
+        this.Historial[0][0] = "Fecha";
+        this.Historial[0][1] = "Nombre";
+        this.Historial[0][2] = "ID Producto"; //Numero de fila
+        this.Historial[0][3] = "Concepto";
+        this.Historial[0][4] = "Cantidad";
+        this.Historial[0][5] = "Precio Compra";
+        this.Historial[0][6] = "Precio Venta";
+        this.Historial[0][7] = "Total $";
+        for (int i = 1; i <= 100; i++) {
+            for (int j = 0; j < this.numeroColumnasTablaHistorial; j++) {
+                this.Historial[i][j] = " ";
+            }
+        }
     }
-
-    public void setNumeroProductos(int numeroProductos) {
-        this.numeroProductos = numeroProductos;
+    
+    private void encabezadosTablaHistorial(){
+        int numeroEspacios=0;
+        for (int i = 0; i < this.numeroColumnasTablaHistorial; i++) {
+            if(String.valueOf(this.Historial[0][i]).length()>numeroEspacios)
+                numeroEspacios = String.valueOf(this.Historial[0][i]).length();
+        }
+        for (int i = 1; i < this.numeroColumnasTablaHistorial; i++) {
+            if(String.valueOf(this.Historial[i][0]).length()>numeroEspacios)
+                numeroEspacios = String.valueOf(this.Historial[i][0]).length();
+        }
+        
+        numeroEspacios/=2;
+        
+        System.out.println("\nTabla de historial...");
+        for (int i = 0; i < this.numeroColumnasTablaHistorial; i++) {
+            for (int j = 0; j < (numeroEspacios-(String.valueOf(this.Historial[0][i]).length()/2)); j++) {
+                System.out.print(" ");
+            }
+            System.out.print(this.Historial[0][i]);
+            for (int j = 0; j < (numeroEspacios-(String.valueOf(this.Historial[0][i]).length()/2)); j++) {
+                System.out.print(" ");
+            }
+            System.out.print("|");
+        }
+        System.out.println("");
     }
-
-    public Object[][] getAlmacen() {
-        return Almacen;
-    }
-
-    public void setAlmacen(Object[][] Almacen) {
-        this.Almacen = Almacen;
+    
+    private void registrosTablaHistorial(int f){
+        int numeroEspacios=0;
+        for (int i = 0; i < this.numeroColumnasTablaHistorial; i++) {
+            if(String.valueOf(this.Historial[0][i]).length()>numeroEspacios)
+                numeroEspacios = String.valueOf(this.Historial[0][i]).length();
+        }
+        for (int i = 1; i < this.Historial.length; i++) {
+            if(String.valueOf(this.Historial[i][0]).length()>numeroEspacios)
+                numeroEspacios = String.valueOf(this.Historial[i][0]).length();
+        }
+        
+        numeroEspacios/=2;
+        
+        if(!String.valueOf(this.Historial[f][0]).equals(" ")){
+            for (int i = 0; i < this.numeroColumnasTablaHistorial; i++) {
+                for (int k = 0; k < (numeroEspacios-(String.valueOf(this.Historial[f][i]).length()/2)); k++) {
+                    System.out.print(" ");
+                }
+                System.out.print(this.Historial[f][i]);
+                for (int k = 0; k < (numeroEspacios-(String.valueOf(this.Historial[f][i]).length()/2)); k++) {
+                    System.out.print(" ");
+                }
+                System.out.print("|");
+            }
+            System.out.println("");
+        }
     }
             
 }
