@@ -36,17 +36,18 @@ public class Ejercicio_Registros_Almacen {
         do {
             System.out.print("\nDigite el numero de la opcion que desee:\n"
             + "[1] Agregar producto\n"
-            + "[2] Check out de stock general\n"
-            + "[3] Buscar producto\n"
+            + "[2] Mostrar stock general\n"
+            + "[3] Buscar producto en stock\n"
             + "[4] Registrar compra de producto\n"
             + "[5] Registrar venta de producto\n"
             + "[6] Mostrar historial\n"
-            + "[7] Salir\n"
+            + "[7] Buscar registros en historial\n"
+            + "[8] Salir\n"
             + "Opcion: ");
            opc = leer.nextInt();
-           if(opc <1 || opc>7)
+           if(opc <1 || opc>8)
                 System.out.println("Opcion no valida, por favor intentelo de nuevo.");
-        } while (opc <1 || opc>7);
+        } while (opc <1 || opc>8);
         
         switch (opc) {
             case 1:
@@ -76,10 +77,51 @@ public class Ejercicio_Registros_Almacen {
                 this.mostrarTablaHistorial();
                 break;
             case 7:
+                fila=this.obtenerFila();
+                if (fila!=0) {
+                    this.encabezadosTablaHistorial();
+                    this.buscandoRegistrosTablaHistorial(fila);
+                }
+                else{
+                    System.out.println("\nEl producto no fue encontrado.");
+                }
+                break;
+            case 8:
                 band=false;
         }
         
         return band;
+    }
+    
+    private void buscandoRegistrosTablaHistorial(int f){
+        int numeroEspacios=0;
+        for (int i = 0; i < this.numeroColumnasTablaHistorial; i++) {
+            if(String.valueOf(this.Historial[0][i]).length()>numeroEspacios)
+                numeroEspacios = String.valueOf(this.Historial[0][i]).length();
+        }
+        for (int i = 1; i < this.Historial.length; i++) {
+            if(String.valueOf(this.Historial[i][0]).length()>numeroEspacios)
+                numeroEspacios = String.valueOf(this.Historial[i][0]).length();
+        }
+        
+        numeroEspacios/=2;
+        
+        for (int l = 1; l <= this.numeroRegistrosTablaHistorial; l++) {
+            if(!String.valueOf(this.Historial[l][0]).equals(" ") && (int)this.Historial[l][2]==f){
+                for (int i = 0; i < this.numeroColumnasTablaHistorial; i++) {
+                    for (int k = 0; k < (numeroEspacios-(String.valueOf(this.Historial[l][i]).length()/2)); k++) {
+                        System.out.print(" ");
+                    }
+                    System.out.print(this.Historial[l][i]);
+                    for (int k = 0; k < (numeroEspacios-(String.valueOf(this.Historial[l][i]).length()/2)); k++) {
+                        System.out.print(" ");
+                    }
+                    System.out.print("|");
+                }
+                System.out.println("");
+            }
+        }
+        
     }
     
     private void registrarCompraProducto(){
@@ -244,7 +286,7 @@ public class Ejercicio_Registros_Almacen {
         System.out.print("\nDigite el nombre del producto que desee buscar: ");
         nombre = leer.nextLine();
         
-        for (int i = 1; i < this.numeroProductos; i++) {
+        for (int i = 1; i <= this.numeroProductos; i++) {
             if (String.valueOf(this.Almacen[i][0]).toLowerCase().equals(nombre.toLowerCase())) {
                 fila=i;
                 break;
