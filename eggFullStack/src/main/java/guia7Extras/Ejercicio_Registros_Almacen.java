@@ -71,7 +71,7 @@ public class Ejercicio_Registros_Almacen {
                 this.registrarCompraProducto();
                 break;
             case 5:
-                
+                this.registrarVentaProducto();
                 break;
             case 6:
                 this.mostrarTablaHistorial();
@@ -122,6 +122,47 @@ public class Ejercicio_Registros_Almacen {
             }
         }
         
+    }
+    
+    private void registrarVentaProducto(){
+        Scanner leer = new Scanner(System.in);
+        boolean band=true;
+        int filaProducto=this.obtenerFila();
+        if(filaProducto!=0){
+            Date fechaActual = new Date();
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            String fecha = sdf.format(fechaActual);
+            float precioCompra = (float)this.Almacen[filaProducto][2];
+            System.out.print("¿Que cantidad del producto "+this.Almacen[filaProducto][0]+" se ha vendido?, ");
+            int cantidadProducto = leer.nextInt();
+            if((int)this.Almacen[filaProducto][1]<cantidadProducto)
+                band=false;
+            float precioVenta = (float)this.Almacen[filaProducto][3];
+            if(band){
+                for (int i = 1; i <= this.Historial.length; i++) {
+                    if (String.valueOf(this.Historial[i][0]).equals(" ")) {
+                        this.Historial[i][0] = fecha;
+                        this.Historial[i][1] = this.Almacen[filaProducto][0];
+                        this.Historial[i][2] = filaProducto;
+                        this.Historial[i][3] = "Venta";
+                        this.Historial[i][4] = cantidadProducto;
+                        this.Historial[i][5] = precioCompra;
+                        this.Historial[i][6] = precioVenta;
+                        this.Historial[i][7] = cantidadProducto*precioVenta;
+                        this.Almacen[filaProducto][1] = (int)this.Almacen[filaProducto][1]-cantidadProducto;
+                        System.out.println("\nRegistro de venta realizado correctamente.");
+                        break;
+                    }
+                }
+            }
+            else{
+                System.out.println("\nNo hay suficiente cantidad del producto "+this.Almacen[filaProducto][0]+" en stock.");
+            }
+            
+        }
+        else{
+            System.out.println("\nEl producto digitado no se ha encontrado en la base de datos.");
+        }
     }
     
     private void registrarCompraProducto(){
