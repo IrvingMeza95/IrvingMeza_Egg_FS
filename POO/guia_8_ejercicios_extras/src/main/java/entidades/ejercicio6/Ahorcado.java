@@ -7,6 +7,7 @@ public class Ahorcado {
     private char palabra[][];
     private int numeroLetrasEncontradas=0;
     private int numeroIntentosMaximos;
+    private int numeroEspaciosEncontrados=0;
 
     public Ahorcado() {
     }
@@ -30,7 +31,7 @@ public class Ahorcado {
         char letra;
         int opc;
         
-        this.crearJuego();
+        this.crearJuego("irving alfonso meza flores");
         
         do {
             do {
@@ -39,16 +40,16 @@ public class Ahorcado {
                 letra = leer.next().charAt(0);
                 this.buscarLetra(letra);
                 this.mostrarProgreso();
-            } while (this.numeroLetrasEncontradas<this.getLongitudPalabra() &&
+            } while (this.numeroLetrasEncontradas<(this.getLongitudPalabra()-this.numeroEspaciosEncontrados) &&
                     this.numeroIntentosMaximos>0);
 
-            if (this.numeroLetrasEncontradas==this.getLongitudPalabra()) {
+            if (this.numeroLetrasEncontradas==(this.getLongitudPalabra()-this.numeroEspaciosEncontrados)) {
                 System.out.println("\n!FELICIDADES¡!Lo haz logrado¡");
             }else if(this.numeroIntentosMaximos==0){
                 System.out.println("\nLo siento, has llegado al limite de intentos, si gustas puedes volverlo a intentar.");
             }
             
-            System.out.print("\n¿Desea volver a jugar?"
+            System.out.print("\n¿Desea volver a jugar?\n"
             + "[1] Si\n"
             + "[2] No\n"
             + "Opcion: ");
@@ -60,14 +61,16 @@ public class Ahorcado {
         } while (opc==1);
     }
     
-    private void crearJuego(){
+    private void crearJuego(String palabra){
         Scanner leer = new Scanner(System.in);
-        System.out.print("¿Cual sera la palabra a buscar en el juego?, ");
-        String palabra = leer.nextLine();
+//        System.out.print("¿Cual sera la palabra a buscar en el juego?, ");
+//        String palabra = leer.nextLine();
         this.palabra = new char[palabra.length()][2];
         for (int i = 0; i < palabra.length(); i++) {
             this.palabra[i][0] =  palabra.charAt(i);
             this.palabra[i][1] = '1';
+            if(palabra.charAt(i)==' ')
+                this.numeroEspaciosEncontrados++;
         }
         System.out.print("¿Cual sera el maximo de intentos para adivinar la palabra?, ");
         this.numeroIntentosMaximos = leer.nextInt();
@@ -94,7 +97,7 @@ public class Ahorcado {
                 this.palabra[i][1]='2';
                 this.numeroLetrasEncontradas++;
                 System.out.println("Numero de letras encontradas: "+this.numeroLetrasEncontradas
-                + "\nNumero de letras faltants de encontrar: "+(this.getLongitudPalabra()-this.numeroLetrasEncontradas));
+                + "\nNumero de letras faltants de encontrar: "+(this.getLongitudPalabra()-this.numeroLetrasEncontradas-this.numeroEspaciosEncontrados));
                 band=true;
             }
                 
