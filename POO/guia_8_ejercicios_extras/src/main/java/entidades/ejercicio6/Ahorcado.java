@@ -94,6 +94,12 @@ public class Ahorcado {
         this.numeroEspaciosEncontrados = numeroEspaciosEncontrados;
     }
     
-    
+    public String getPalabraCadena(){
+        String palabraBuscar="";
+        for (int i = 0; i < this.getLongitudPalabra(); i++) {
+            palabraBuscar+= this.palabra[i][0];
+        }
+        return palabraBuscar;
+    }
     
 }

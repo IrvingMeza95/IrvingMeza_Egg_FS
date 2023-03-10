@@ -33,7 +33,7 @@ public class AhorcadoControladora {
             if (ahorcado.getNumeroLetrasEncontradas()==(ahorcado.getLongitudPalabra()-ahorcado.getNumeroEspaciosEncontrados())) {
                 System.out.println("\n!FELICIDADES¡!Lo haz logrado¡");
             }else if(ahorcado.getNumeroIntentosMaximos()==0){
-                System.out.println("\nLo siento, has llegado al limite de intentos, si gustas puedes volverlo a intentar.");
+                System.out.println("\nLo siento, has llegado al limite de intentos, la palabra a buscar era ["+ahorcado.getPalabraCadena()+"].");
             }
             
             System.out.print("\n¿Desea volver a jugar?\n"
@@ -77,11 +77,7 @@ public class AhorcadoControladora {
             }
         }
         else{
-            String palabraBuscar="";
-            for (int i = 0; i < ahorcado.getLongitudPalabra(); i++) {
-                palabraBuscar+= ahorcado.palabra[i][0];
-            }
-            JOptionPane.showMessageDialog(null, "La palabra a buscar es: "+palabraBuscar);
+            JOptionPane.showMessageDialog(null, "La palabra a buscar es: "+ahorcado.getPalabraCadena());
         }   
     }
     
